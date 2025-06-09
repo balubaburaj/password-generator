@@ -1,88 +1,406 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Password Generator Plus 3.0</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Password Generator Plus</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        margin: 20px;
+        background-color: #f4f4f9;
+      }
+      .container {
+        max-width: 600px;
+        margin: auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        text-align: center;
+        color: #333;
+      }
+      .form-group {
+        margin-bottom: 15px;
+      }
+      label {
+        display: inline-block;
+        width: 200px;
+      }
+      input[type="text"],
+      select {
+        padding: 8px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+      }
+      button {
+        padding: 10px 15px;
+        border: none;
+        background-color: #007bff;
+        color: white;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-right: 10px;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      #passwords-container {
+        margin-top: 20px;
+        border: 1px solid #ccc;
+        padding: 10px;
+        background-color: #e9ecef;
+        border-radius: 4px;
+      }
+      .password-item {
+        font-family: monospace;
+        font-size: 1.2em;
+        padding: 5px;
+        white-space: pre;
+      }
+    </style>
+  </head>
+  <body>
     <div class="container">
-        <h1>Password Generator Plus <sup>3.0</sup></h1>
+      <h1>Password Generator Plus <sup>3.0</sup></h1>
 
-        <div class="setting-item">
-            <label for="passwordLength">Password Length:</label>
-            <select id="passwordLength"></select>
-        </div>
+      <div class="form-group">
+        <label for="length">Password Length:</label>
+        <select id="length"></select>
+      </div>
+      <div class="form-group">
+        <input type="checkbox" id="includeNumbers" checked />
+        <label for="includeNumbers">Include Numbers: (e.g. 123456 )</label>
+      </div>
+      <div class="form-group">
+        <input type="checkbox" id="includeLowercase" checked />
+        <label for="includeLowercase"
+          >Include Lowercase Characters: (e.g. abcdefgh )</label
+        >
+      </div>
+      <div class="form-group">
+        <input type="checkbox" id="includeUppercase" checked />
+        <label for="includeUppercase"
+          >Include Uppercase Characters: (e.g. ABCDEFGH )</label
+        >
+      </div>
+      <div class="form-group">
+        <input type="checkbox" id="beginWithLetter" checked />
+        <label for="beginWithLetter"
+          >Begin With A Letter: ( don't begin with a number or symbol )</label
+        >
+      </div>
+      <div class="form-group">
+        <input type="checkbox" id="includeSymbols" checked />
+        <label for="includeSymbols">Include Symbols:</label>
+        <input type="text" id="symbols" value="!*#$%&()*+,-./:;<=>?@[]^_{|}~" />
+      </div>
+      <div class="form-group">
+        <input type="checkbox" id="noSimilar" checked />
+        <label for="noSimilar"
+          >No Similar Characters: ( don't use characters like i, l, 1, L, O, 0,
+          o, etc. )</label
+        >
+      </div>
+      <div class="form-group">
+        <input type="checkbox" id="noDuplicates" checked />
+        <label for="noDuplicates"
+          >No Duplicate Characters: ( don't use the same character more than
+          once )</label
+        >
+      </div>
+      <div class="form-group">
+        <input type="checkbox" id="noSequential" checked />
+        <label for="noSequential"
+          >No Sequential Characters: ( don't use sequential characters, e.g.
+          abc, 789 )</label
+        >
+      </div>
+      <div class="form-group">
+        <input type="checkbox" id="autoGenerate" />
+        <label for="autoGenerate"
+          >Auto Generate On The First Call: ( generate passwords automatically
+          when you open this page )</label
+        >
+      </div>
+      <div class="form-group">
+        <label for="quantity">Quantity:</label>
+        <select id="quantity"></select>
+      </div>
+      <div class="form-group">
+        <input type="checkbox" id="savePreference" />
+        <label for="savePreference"
+          >( save all the settings above in cookies )</label
+        >
+        <button id="reset">Reset</button>
+      </div>
 
-        <div class="setting-item checkbox-item">
-            <input type="checkbox" id="includeNumbers" checked>
-            <label for="includeNumbers">Include Numbers: <span>(e.g. 123456)</span></label>
-        </div>
+      <button id="generate">Generate</button>
+      <button id="copyFirst">Copy the 1st Line</button>
+      <button id="copyAll">Copy ALL</button>
 
-        <div class="setting-item checkbox-item">
-            <input type="checkbox" id="includeLowercase" checked>
-            <label for="includeLowercase">Include Lowercase Characters: <span>(e.g. abcdefgh)</span></label>
-        </div>
-
-        <div class="setting-item checkbox-item">
-            <input type="checkbox" id="includeUppercase" checked>
-            <label for="includeUppercase">Include Uppercase Characters: <span>(e.g. ABCDEFGH)</span></label>
-        </div>
-
-        <div class="setting-item checkbox-item">
-            <input type="checkbox" id="beginWithLetter" checked>
-            <label for="beginWithLetter">Begin With A Letter: <span>(don't begin with a number or symbol )</span></label>
-        </div>
-
-        <div class="setting-item symbol-input">
-            <input type="checkbox" id="includeSymbols" checked>
-            <label for="includeSymbols">Include Symbols:</label>
-            <input type="text" id="symbolsInput" value="!*&#$%&()'+,-./:;<=>?@[]^_{}|~">
-        </div>
-
-        <div class="setting-item checkbox-item">
-            <input type="checkbox" id="noSimilarCharacters" checked>
-            <label for="noSimilarCharacters">No Similar Characters: <span>(don't use characters like i, l, 1, L, O, 0, etc.)</span></label>
-        </div>
-
-        <div class="setting-item checkbox-item">
-            <input type="checkbox" id="noDuplicateCharacters" checked>
-            <label for="noDuplicateCharacters">No Duplicate Characters: <span>(don't use the same character more than once )</span></label>
-        </div>
-
-        <div class="setting-item checkbox-item">
-            <input type="checkbox" id="noSequentialCharacters" checked>
-            <label for="noSequentialCharacters">No Sequential Characters: <span>(don't use sequential characters, e.g. abc, 789 )</span></label>
-        </div>
-
-        <div class="setting-item checkbox-item">
-            <input type="checkbox" id="autoGenerate" checked>
-            <label for="autoGenerate">Auto Generate On The First Call: <span>( generate passwords automatically when you open this page )</span></label>
-        </div>
-
-        <div class="setting-item">
-            <label for="quantity">Quantity:</label>
-            <select id="quantity"></select>
-        </div>
-
-        <div class="setting-item action-buttons">
-            <input type="checkbox" id="saveMyPreference">
-            <label for="saveMyPreference">Save My Preference:</label>
-            <button id="resetButton">Reset</button>
-        </div>
-
-        <div class="generate-buttons">
-            <button id="generateButton">Generate</button>
-            <button id="copyFirstLineButton">Copy the 1st Line</button>
-            <button id="copyAllButton">Copy ALL</button>
-        </div>
-
-        <h2>Your New Passwords:</h2>
-        <div class="password-output">
-            <ul id="passwordList"></ul>
-        </div>
+      <h3>Your New Passwords:</h3>
+      <div id="passwords-container"></div>
     </div>
-    <script src="script.js"></script>
-</body>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // DOM Elements
+        const lengthSelect = document.getElementById("length");
+        const quantitySelect = document.getElementById("quantity");
+        const includeNumbers = document.getElementById("includeNumbers");
+        const includeLowercase = document.getElementById("includeLowercase");
+        const includeUppercase = document.getElementById("includeUppercase");
+        const beginWithLetter = document.getElementById("beginWithLetter");
+        const includeSymbols = document.getElementById("includeSymbols");
+        const symbolsInput = document.getElementById("symbols");
+        const noSimilar = document.getElementById("noSimilar");
+        const noDuplicates = document.getElementById("noDuplicates");
+        const noSequential = document.getElementById("noSequential");
+        const autoGenerate = document.getElementById("autoGenerate");
+        const savePreference = document.getElementById("savePreference");
+        const resetButton = document.getElementById("reset");
+        const generateButton = document.getElementById("generate");
+        const copyFirstButton = document.getElementById("copyFirst");
+        const copyAllButton = document.getElementById("copyAll");
+        const passwordsContainer = document.getElementById(
+          "passwords-container"
+        );
+
+        const defaults = {
+          length: 22,
+          quantity: 5,
+          includeNumbers: true,
+          includeLowercase: true,
+          includeUppercase: true,
+          beginWithLetter: true,
+          includeSymbols: true,
+          symbols: "!*#$%&()*+,-./:;<=>?@[]^_{|}~",
+          noSimilar: true,
+          noDuplicates: true,
+          noSequential: true,
+          autoGenerate: false,
+          savePreference: false,
+        };
+
+        // Populate dropdowns
+        for (let i = 6; i <= 50; i++) {
+          const option = document.createElement("option");
+          option.value = i;
+          option.textContent = i;
+          lengthSelect.appendChild(option);
+        }
+        for (let i = 5; i <= 500; i += i < 100 ? 5 : 10) {
+          const option = document.createElement("option");
+          option.value = i;
+          option.textContent = i;
+          quantitySelect.appendChild(option);
+        }
+
+        // --- Preference Management ---
+        function saveSettings() {
+          if (savePreference.checked) {
+            const settings = {
+              length: lengthSelect.value,
+              quantity: quantitySelect.value,
+              includeNumbers: includeNumbers.checked,
+              includeLowercase: includeLowercase.checked,
+              includeUppercase: includeUppercase.checked,
+              beginWithLetter: beginWithLetter.checked,
+              includeSymbols: includeSymbols.checked,
+              symbols: symbolsInput.value,
+              noSimilar: noSimilar.checked,
+              noDuplicates: noDuplicates.checked,
+              noSequential: noSequential.checked,
+              autoGenerate: autoGenerate.checked,
+              savePreference: savePreference.checked,
+            };
+            localStorage.setItem(
+              "passwordGeneratorSettings",
+              JSON.stringify(settings)
+            );
+          } else {
+            localStorage.removeItem("passwordGeneratorSettings");
+          }
+        }
+
+        function loadSettings() {
+          const savedSettings = localStorage.getItem(
+            "passwordGeneratorSettings"
+          );
+          if (savedSettings) {
+            const settings = JSON.parse(savedSettings);
+            setUIValues(settings);
+          } else {
+            setUIValues(defaults);
+          }
+        }
+
+        function setUIValues(settings) {
+          lengthSelect.value = settings.length;
+          quantitySelect.value = settings.quantity;
+          includeNumbers.checked = settings.includeNumbers;
+          includeLowercase.checked = settings.includeLowercase;
+          includeUppercase.checked = settings.includeUppercase;
+          beginWithLetter.checked = settings.beginWithLetter;
+          includeSymbols.checked = settings.includeSymbols;
+          symbolsInput.value = settings.symbols;
+          noSimilar.checked = settings.noSimilar;
+          noDuplicates.checked = settings.noDuplicates;
+          noSequential.checked = settings.noSequential;
+          autoGenerate.checked = settings.autoGenerate;
+          savePreference.checked = settings.savePreference;
+        }
+
+        resetButton.addEventListener("click", () => {
+          setUIValues(defaults);
+          saveSettings(); // To clear storage if save preference was unchecked
+        });
+
+        // --- Password Generation Logic ---
+        function generatePassword() {
+          const length = parseInt(lengthSelect.value);
+          let charset = "";
+          let guaranteedChars = [];
+
+          const numbers = "0123456789";
+          const lowercase = "abcdefghijklmnopqrstuvwxyz";
+          const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+          const symbols = symbolsInput.value;
+          const similarChars = /[il1Lo0O]/g;
+
+          if (includeNumbers.checked) {
+            charset += numbers;
+            guaranteedChars.push(getRandomChar(numbers));
+          }
+          if (includeLowercase.checked) {
+            charset += lowercase;
+            guaranteedChars.push(getRandomChar(lowercase));
+          }
+          if (includeUppercase.checked) {
+            charset += uppercase;
+            guaranteedChars.push(getRandomChar(uppercase));
+          }
+          if (includeSymbols.checked) {
+            charset += symbols;
+            guaranteedChars.push(getRandomChar(symbols));
+          }
+
+          if (noSimilar.checked) {
+            charset = charset.replace(similarChars, "");
+          }
+
+          if (charset === "") {
+            alert("Please select at least one character type.");
+            return null;
+          }
+
+          while (true) {
+            let password = "";
+            let tempCharset = charset;
+
+            // Handle "Begin with a letter"
+            if (beginWithLetter.checked) {
+              let firstChar = getRandomChar(lowercase + uppercase);
+              if (noSimilar.checked)
+                firstChar = firstChar.replace(similarChars, "");
+              password += firstChar;
+            }
+
+            // Fill the rest of the password
+            for (let i = password.length; i < length; i++) {
+              let randomChar = getRandomChar(tempCharset);
+              if (noDuplicates.checked) {
+                tempCharset = tempCharset.replace(randomChar, "");
+              }
+              password += randomChar;
+            }
+
+            // Shuffle in guaranteed characters to ensure rules are met
+            // This is a simple shuffle, could be improved
+            let passArray = password.split("");
+            guaranteedChars.forEach((char) => {
+              if (!passArray.includes(char) && passArray.length < length) {
+                let randomIndex = Math.floor(Math.random() * passArray.length);
+                passArray.splice(randomIndex, 0, char);
+              }
+            });
+            password = passArray.join("").slice(0, length);
+
+            // Validate against constraints
+            if (noSequential.checked && hasSequentialChars(password)) continue;
+
+            return password;
+          }
+        }
+
+        function getRandomChar(str) {
+          const array = new Uint32Array(1);
+          crypto.getRandomValues(array);
+          return str[array[0] % str.length];
+        }
+
+        function hasSequentialChars(str) {
+          for (let i = 0; i < str.length - 2; i++) {
+            const c1 = str.charCodeAt(i);
+            const c2 = str.charCodeAt(i + 1);
+            const c3 = str.charCodeAt(i + 2);
+            if (c1 + 1 === c2 && c2 + 1 === c3) return true;
+          }
+          return false;
+        }
+
+        // --- UI Event Handlers ---
+        function displayPasswords() {
+          passwordsContainer.innerHTML = "";
+          const quantity = parseInt(quantitySelect.value);
+          for (let i = 0; i < quantity; i++) {
+            const password = generatePassword();
+            if (password) {
+              const div = document.createElement("div");
+              div.className = "password-item";
+              div.textContent = `${i + 1}. ${password}`;
+              passwordsContainer.appendChild(div);
+            }
+          }
+          saveSettings();
+        }
+
+        generateButton.addEventListener("click", displayPasswords);
+
+        copyFirstButton.addEventListener("click", () => {
+          const firstPassword =
+            passwordsContainer.querySelector(".password-item");
+          if (firstPassword) {
+            const textToCopy = firstPassword.textContent.split(". ")[1];
+            navigator.clipboard
+              .writeText(textToCopy)
+              .then(() => alert("First password copied!"));
+          }
+        });
+
+        copyAllButton.addEventListener("click", () => {
+          let allPasswords = "";
+          passwordsContainer
+            .querySelectorAll(".password-item")
+            .forEach((item) => {
+              allPasswords += item.textContent.split(". ")[1] + "\n";
+            });
+          if (allPasswords) {
+            navigator.clipboard
+              .writeText(allPasswords)
+              .then(() => alert("All passwords copied!"));
+          }
+        });
+
+        // Initial Load
+        loadSettings();
+        if (autoGenerate.checked) {
+          displayPasswords();
+        }
+      });
+    </script>
+  </body>
 </html>
