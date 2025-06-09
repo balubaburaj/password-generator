@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Generator Plus 3.0</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Password Generator Plus <sup>3.0</sup></h1>
+
+        <div class="setting-item">
+            <label for="passwordLength">Password Length:</label>
+            <select id="passwordLength"></select>
+        </div>
+
+        <div class="setting-item checkbox-item">
+            <input type="checkbox" id="includeNumbers" checked>
+            <label for="includeNumbers">Include Numbers: <span>(e.g. 123456)</span></label>
+        </div>
+
+        <div class="setting-item checkbox-item">
+            <input type="checkbox" id="includeLowercase" checked>
+            <label for="includeLowercase">Include Lowercase Characters: <span>(e.g. abcdefgh)</span></label>
+        </div>
+
+        <div class="setting-item checkbox-item">
+            <input type="checkbox" id="includeUppercase" checked>
+            <label for="includeUppercase">Include Uppercase Characters: <span>(e.g. ABCDEFGH)</span></label>
+        </div>
+
+        <div class="setting-item checkbox-item">
+            <input type="checkbox" id="beginWithLetter" checked>
+            <label for="beginWithLetter">Begin With A Letter: <span>(don't begin with a number or symbol )</span></label>
+        </div>
+
+        <div class="setting-item symbol-input">
+            <input type="checkbox" id="includeSymbols" checked>
+            <label for="includeSymbols">Include Symbols:</label>
+            <input type="text" id="symbolsInput" value="!*&#$%&()'+,-./:;<=>?@[]^_{}|~">
+        </div>
+
+        <div class="setting-item checkbox-item">
+            <input type="checkbox" id="noSimilarCharacters" checked>
+            <label for="noSimilarCharacters">No Similar Characters: <span>(don't use characters like i, l, 1, L, O, 0, etc.)</span></label>
+        </div>
+
+        <div class="setting-item checkbox-item">
+            <input type="checkbox" id="noDuplicateCharacters" checked>
+            <label for="noDuplicateCharacters">No Duplicate Characters: <span>(don't use the same character more than once )</span></label>
+        </div>
+
+        <div class="setting-item checkbox-item">
+            <input type="checkbox" id="noSequentialCharacters" checked>
+            <label for="noSequentialCharacters">No Sequential Characters: <span>(don't use sequential characters, e.g. abc, 789 )</span></label>
+        </div>
+
+        <div class="setting-item checkbox-item">
+            <input type="checkbox" id="autoGenerate" checked>
+            <label for="autoGenerate">Auto Generate On The First Call: <span>( generate passwords automatically when you open this page )</span></label>
+        </div>
+
+        <div class="setting-item">
+            <label for="quantity">Quantity:</label>
+            <select id="quantity"></select>
+        </div>
+
+        <div class="setting-item action-buttons">
+            <input type="checkbox" id="saveMyPreference">
+            <label for="saveMyPreference">Save My Preference:</label>
+            <button id="resetButton">Reset</button>
+        </div>
+
+        <div class="generate-buttons">
+            <button id="generateButton">Generate</button>
+            <button id="copyFirstLineButton">Copy the 1st Line</button>
+            <button id="copyAllButton">Copy ALL</button>
+        </div>
+
+        <h2>Your New Passwords:</h2>
+        <div class="password-output">
+            <ul id="passwordList"></ul>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
