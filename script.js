@@ -273,13 +273,31 @@ document.addEventListener("DOMContentLoaded", () => {
         numSpan.className = "password-number";
         numSpan.textContent = `${generatedCount}.`;
 
-        // Create a selectable span for the password
-        const passSpan = document.createElement("span");
-        passSpan.className = "password-text";
-        passSpan.textContent = ` ${password}`;
+        // Create a selectable input for the password
+        const passInput = document.createElement("input");
+        passInput.type = "text";
+        passInput.className = "password-text";
+        passInput.value = password;
+        passInput.readOnly = true;
+
+        // Auto-select text on click
+        passInput.addEventListener("click", () => {
+          passInput.select();
+        });
+        
+        // Create an individual copy button
+        const copyBtn = document.createElement("button");
+        copyBtn.className = "copy-btn";
+        copyBtn.textContent = "Copy";
+        copyBtn.addEventListener("click", () => {
+          navigator.clipboard
+            .writeText(password)
+            .then(() => successCopyAlert());
+        });
 
         div.appendChild(numSpan);
-        div.appendChild(passSpan);
+        div.appendChild(passInput);
+        div.appendChild(copyBtn);
         passwordsContainer.appendChild(div);
       }
     }
@@ -292,7 +310,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const firstPassword = passwordsContainer.querySelector(".password-text");
     if (firstPassword) {
       navigator.clipboard
-        .writeText(firstPassword.textContent.trim())
+        .writeText(firstPassword.value)
         .then(() => successCopyAlert());
     }
   });
@@ -300,11 +318,11 @@ document.addEventListener("DOMContentLoaded", () => {
   copyAllButton.addEventListener("click", () => {
     let allPasswords = "";
     passwordsContainer.querySelectorAll(".password-text").forEach((item) => {
-      allPasswords += item.textContent.trim() + "\n";
+      allPasswords += item.value + "\n";
     });
     if (allPasswords) {
       navigator.clipboard
-        .writeText(allPasswords)
+        .writeText(allPasswords.trimEnd())
         .then(() => successCopyAlertAll());
     }
   });
