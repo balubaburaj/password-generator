@@ -1,0 +1,38 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+      - master # Triggers on either main or master
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy to Hostinger
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 📦 Install Dependencies
+        run: npm install
+
+      - name: 🔨 Build & Minify Files (Vite)
+        run: npm run build
+
+      - name: 🚀 Sync files via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          # Vite outputs minified files into the 'dist' folder
+          local-dir: ./dist/ 
+          # Because you restricted the FTP account to the subdomain folder, 
+          # the root directory (./) is exactly where we want to upload!
+          server-dir: ./

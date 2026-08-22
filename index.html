@@ -6,19 +6,60 @@
     <title>Password Generator Plus</title>
     <link rel="icon" href="/favicon.png" type="image/x-icon" />
     <link rel="stylesheet" href="style.css" />
-      <script src="script.js" defer></script>
+    <script src="script.js" defer></script>
   </head>
   <body>
     <div class="container">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-        <h1 style="margin-bottom: 0;">Password Generator Plus</h1>
-        <button id="themeToggle" style="background: none; border: none; font-size: 1.5em; cursor: pointer; padding: 0; color: var(--text-color); margin: 0; transition: transform 0.2s;" title="Toggle Dark/Light Mode">🌙</button>
+      <div
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 25px;
+        "
+      >
+        <h1 style="margin-bottom: 0">Password Generator Plus+</h1>
+        <button
+          id="themeToggle"
+          style="
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            padding: 0;
+            color: var(--text-color);
+            margin: 0;
+            transition: transform 0.2s;
+          "
+          title="Toggle Dark/Light Mode"
+        >
+          🌙
+        </button>
       </div>
 
       <!-- Top Settings -->
-      <div class="form-group" style="margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid var(--divider);">
-        <label for="length" class="label-text" style="font-weight: bold; font-size: 1.1em;">Password Length:</label>
-        <input type="number" id="length" list="length-options" min="1" max="10000" style="width: 100px; font-size: 1.1em;" />
+      <div
+        class="form-group"
+        style="
+          margin-bottom: 25px;
+          padding-bottom: 15px;
+          border-bottom: 1px solid var(--divider);
+        "
+      >
+        <label
+          for="length"
+          class="label-text"
+          style="font-weight: bold; font-size: 1.1em"
+          >Password Length:</label
+        >
+        <input
+          type="number"
+          id="length"
+          list="length-options"
+          min="1"
+          max="10000"
+          style="width: 100px; font-size: 1.1em"
+        />
         <datalist id="length-options"></datalist>
       </div>
 
@@ -75,7 +116,8 @@
             <input type="checkbox" id="noDuplicates" checked />
             <label for="noDuplicates"
               >No Duplicate Characters: ( don't use the same character more than
-              once, Max Available: <span id="max-unique-chars">93</span> )</label
+              once, Max Available:
+              <span id="max-unique-chars">93</span> )</label
             >
           </div>
           <div class="form-group">
@@ -87,7 +129,13 @@
           </div>
         </div>
       </div>
-      <hr style="border: none; border-top: 1px solid var(--divider); margin: 20px 0" />
+      <hr
+        style="
+          border: none;
+          border-top: 1px solid var(--divider);
+          margin: 20px 0;
+        "
+      />
 
       <div class="form-group">
         <label for="quantity" class="label-text">Quantity:</label>
@@ -115,15 +163,23 @@
       </div>
 
       <h3>Your New Passwords:</h3>
-      <p id="fallback-warning" style="color: #d9534f; display: none; font-size: 0.9em; margin-top: -10px; margin-bottom: 10px;">
-        * Note: Duplicates were included because the requested length exceeded the available unique characters.
+      <p
+        id="fallback-warning"
+        style="
+          color: #d9534f;
+          display: none;
+          font-size: 0.9em;
+          margin-top: -10px;
+          margin-bottom: 10px;
+        "
+      >
+        * Note: Duplicates were included because the requested length exceeded
+        the available unique characters.
       </p>
       <div id="passwords-container"></div>
     </div>
     <!-- The actual snackbar -->
     <div id="snackbar">Successfully copied first password</div>
     <div id="snackbar-all">Successfully copied all password</div>
-
-    
   </body>
 </html>
