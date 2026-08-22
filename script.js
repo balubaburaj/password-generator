@@ -311,7 +311,21 @@ document.addEventListener("DOMContentLoaded", () => {
     if (generatedCount > 0) saveSettings();
   }
 
-  generateButton.addEventListener("click", displayPasswords);
+  // --- Visual Feedback for Settings Changes ---
+  const allInputs = document.querySelectorAll('.container input, .container select');
+  allInputs.forEach(input => {
+    input.addEventListener('change', () => {
+      generateButton.classList.add('btn-attention');
+    });
+    input.addEventListener('input', () => {
+      generateButton.classList.add('btn-attention');
+    });
+  });
+
+  generateButton.addEventListener("click", () => {
+    generateButton.classList.remove('btn-attention');
+    displayPasswords();
+  });
 
   copyFirstButton.addEventListener("click", () => {
     const firstPassword = passwordsContainer.querySelector(".password-text");

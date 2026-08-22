@@ -140,6 +140,18 @@
         white-space: nowrap;
       }
 
+      @keyframes button-pulse {
+        0% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); }
+        70% { box-shadow: 0 0 0 10px rgba(40, 167, 69, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
+      }
+      .btn-attention {
+        background-color: #28a745 !important;
+        animation: button-pulse 1.5s infinite !important;
+      }
+      .btn-attention:hover {
+        background-color: #218838 !important;
+      }
       /* toast */
       #snackbar, #snackbar-all {
         visibility: hidden;
