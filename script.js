@@ -108,8 +108,6 @@ document.addEventListener("DOMContentLoaded", () => {
         "passwordGeneratorSettings",
         JSON.stringify(settings),
       );
-    } else {
-      localStorage.removeItem("passwordGeneratorSettings");
     }
   }
 
@@ -154,8 +152,8 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   resetButton.addEventListener("click", () => {
+    localStorage.removeItem("passwordGeneratorSettings");
     setUIValues(defaults);
-    saveSettings();
   });
 
   // --- Password Generation Logic ---
