@@ -1,6 +1,7 @@
 # Password Generator Plus
 
 Password Generator Plus is a secure, client-side password generation tool built with HTML, CSS, and JavaScript. It allows users to create strong, customizable passwords directly in their browser with no data ever sent to a server.
+![Screenshot](<Screenshot 2026-08-23 at 03-42-36 Password Generator Plus.png>)
 
 ## Features
 
