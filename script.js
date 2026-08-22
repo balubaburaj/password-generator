@@ -272,6 +272,8 @@ document.addEventListener("DOMContentLoaded", () => {
         passInput.className = "password-text";
         passInput.value = password;
         passInput.readOnly = true;
+        // Adjust width based on string length, add 24px for padding
+        passInput.style.width = `calc(${password.length}ch + 24px)`;
 
         // Auto-select text on click
         passInput.addEventListener("click", () => {
