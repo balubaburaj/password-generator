@@ -39,12 +39,12 @@ document.addEventListener("DOMContentLoaded", () => {
     savePreference: false,
   };
 
+  const lengthOptions = document.getElementById("length-options");
   // Populate dropdowns
   for (let i = 6; i <= 50; i++) {
     const option = document.createElement("option");
     option.value = i;
-    option.textContent = i;
-    lengthSelect.appendChild(option);
+    lengthOptions.appendChild(option);
   }
   for (let i = 5; i <= 100; i += 5) {
     const option = document.createElement("option");

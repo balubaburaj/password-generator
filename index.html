@@ -188,7 +188,8 @@
         <div class="column">
           <div class="form-group">
             <label for="length" class="label-text">Password Length:</label>
-            <select id="length"></select>
+            <input type="number" id="length" list="length-options" min="1" max="10000" style="width: 80px;" />
+            <datalist id="length-options"></datalist>
           </div>
           <div class="form-group">
             <input type="checkbox" id="includeNumbers" checked />
