@@ -122,121 +122,113 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // --- Password Generation Logic ---
+
+  // Helper for Fisher-Yates shuffle
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const arrayBuffer = new Uint32Array(1);
+      crypto.getRandomValues(arrayBuffer);
+      const j = arrayBuffer[0] % (i + 1);
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
   function generatePassword() {
     const length = parseInt(lengthSelect.value);
-    let charset = "";
-    let guaranteedChars = [];
-
-    const numbers = "0123456789";
-    const lowercase = "abcdefghijklmnopqrstuvwxyz";
-    const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    const symbols = symbolsInput.value;
-    const simpleSymbols = simpleSymbolsInput.value;
     const similarChars = /[il1Lo0O]/g;
 
-    let initialCharset = "";
-    if (includeNumbers.checked) initialCharset += numbers;
-    if (includeLowercase.checked) initialCharset += lowercase;
-    if (includeUppercase.checked) initialCharset += uppercase;
-    if (includeSymbols.checked) initialCharset += symbols;
-    if (includeSimpleSymbols.checked) initialCharset += simpleSymbols;
+    const charSets = {
+      numbers: "0123456789",
+      lowercase: "abcdefghijklmnopqrstuvwxyz",
+      uppercase: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      symbols: symbolsInput.value,
+      simpleSymbols: simpleSymbolsInput.value,
+    };
 
     if (noSimilar.checked) {
-      charset = initialCharset.replace(similarChars, "");
-    } else {
-      charset = initialCharset;
+      for (let key in charSets) {
+        charSets[key] = charSets[key].replace(similarChars, "");
+      }
     }
 
-    if (charset === "") {
+    let activeSets = [];
+    if (includeNumbers.checked) activeSets.push(charSets.numbers);
+    if (includeLowercase.checked) activeSets.push(charSets.lowercase);
+    if (includeUppercase.checked) activeSets.push(charSets.uppercase);
+    if (includeSymbols.checked && charSets.symbols) activeSets.push(charSets.symbols);
+    if (includeSimpleSymbols.checked && charSets.simpleSymbols) activeSets.push(charSets.simpleSymbols);
+
+    if (activeSets.length === 0 || activeSets.every(set => set === "")) {
       alert("Please select at least one character type or add more symbols.");
       return null;
     }
 
-    // Ensure we have enough unique characters if noDuplicates is checked
-    if (noDuplicates.checked && charset.length < length) {
-      alert(
-        "Not enough unique characters available for the selected length. Please adjust your settings.",
-      );
+    let fullCharset = activeSets.join("");
+
+    if (noDuplicates.checked && fullCharset.length < length) {
+      alert("Not enough unique characters available for the selected length. Please adjust your settings.");
       return null;
     }
 
-    let password;
     let attempts = 0;
-
     while (attempts < 100) {
-      // Safety break to prevent infinite loops
-      password = "";
-      let tempCharset = charset;
+      let passwordArray = [];
+      let tempCharset = fullCharset;
 
-      if (beginWithLetter.checked) {
-        let letterCharset = lowercase + uppercase;
-        if (noSimilar.checked) {
-          letterCharset = letterCharset.replace(similarChars, "");
-        }
-        if (letterCharset.length > 0) {
-          const firstChar = getRandomChar(letterCharset);
-          password += firstChar;
+      // 1. Guaranteed Inclusion: pick one from each selected set
+      for (let charSet of activeSets) {
+        if (charSet.length > 0) {
+          let validChars = charSet;
           if (noDuplicates.checked) {
-            tempCharset = tempCharset.replace(firstChar, "");
+            validChars = validChars.split('').filter(c => tempCharset.includes(c)).join('');
+          }
+          if (validChars.length > 0) {
+            let char = getRandomChar(validChars);
+            passwordArray.push(char);
+            if (noDuplicates.checked) {
+              tempCharset = tempCharset.replace(char, "");
+            }
           }
         }
       }
 
-      for (let i = password.length; i < length; i++) {
-        let randomChar = getRandomChar(tempCharset);
-        password += randomChar;
+      // 2. Fill the remaining characters
+      while (passwordArray.length < length) {
+        if (tempCharset.length === 0) break;
+        let char = getRandomChar(tempCharset);
+        passwordArray.push(char);
         if (noDuplicates.checked) {
-          tempCharset = tempCharset.replace(randomChar, "");
+          tempCharset = tempCharset.replace(char, "");
         }
       }
 
-      // Shuffle the password to make it more random
-      password = password
-        .split("")
-        .sort(() => 0.5 - Math.random())
-        .join("");
+      // 3. Unbiased Shuffle (Fisher-Yates)
+      passwordArray = shuffleArray(passwordArray);
 
-      // Validate against constraints
+      // 4. Enforce Begin With Letter
+      if (beginWithLetter.checked) {
+        let letterCharset = charSets.lowercase + charSets.uppercase;
+        let letterIndex = passwordArray.findIndex(char => letterCharset.includes(char));
+        if (letterIndex !== -1) {
+          let letter = passwordArray.splice(letterIndex, 1)[0];
+          passwordArray.unshift(letter);
+        }
+      }
+
+      let password = passwordArray.join("");
+
+      // 5. Sequential check validation
       if (noSequential.checked && hasSequentialChars(password)) {
         attempts++;
         continue;
       }
-      if (!meetsGuaranteedChars(password)) {
-        attempts++;
-        continue;
-      }
-
+      
       return password;
     }
-    // If it fails after 100 attempts, return null
-    console.warn(
-      "Could not generate a valid password after 100 attempts. Check constraints.",
-    );
-    return null;
-  }
 
-  function meetsGuaranteedChars(password) {
-    if (includeNumbers.checked && !/[0-9]/.test(password)) return false;
-    if (includeLowercase.checked && !/[a-z]/.test(password)) return false;
-    if (includeUppercase.checked && !/[A-Z]/.test(password)) return false;
-    if (
-      includeSymbols.checked &&
-      !new RegExp(
-        `[${symbolsInput.value.replace(
-          /[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|\'\"]/g,
-          "\\$&",
-        )}]`,
-      ).test(password)
-    )
-      return false;
-    if (
-      includeSimpleSymbols.checked &&
-      !new RegExp(
-        `[${simpleSymbolsInput.value.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|\'\"]/g, "\\$&")}]`,
-      ).test(password)
-    )
-      return false;
-    return true;
+    console.warn("Could not generate a valid password after 100 attempts. Check constraints.");
+    return null;
   }
 
   function getRandomChar(str) {
@@ -251,6 +243,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const c2 = str.charCodeAt(i + 1);
       const c3 = str.charCodeAt(i + 2);
       if (c1 + 1 === c2 && c2 + 1 === c3) return true;
+      if (c1 - 1 === c2 && c2 - 1 === c3) return true;
     }
     return false;
   }
