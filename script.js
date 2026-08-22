@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const copyFirstButton = document.getElementById("copyFirst");
   const copyAllButton = document.getElementById("copyAll");
   const passwordsContainer = document.getElementById("passwords-container");
+  const maxUniqueCharsSpan = document.getElementById("max-unique-chars");
   let duplicateFallbackTriggered = false;
 
   const defaults = {
@@ -322,14 +323,47 @@ document.addEventListener("DOMContentLoaded", () => {
     if (generatedCount > 0) saveSettings();
   }
 
+  function updateMaxUniqueChars() {
+    const similarChars = /[il1Lo0O]/g;
+    const charSets = {
+      numbers: "0123456789",
+      lowercase: "abcdefghijklmnopqrstuvwxyz",
+      uppercase: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+      symbols: symbolsInput.value,
+      simpleSymbols: simpleSymbolsInput.value,
+    };
+
+    if (noSimilar.checked) {
+      for (let key in charSets) {
+        charSets[key] = charSets[key].replace(similarChars, "");
+      }
+    }
+
+    let activeSets = [];
+    if (includeNumbers.checked) activeSets.push(charSets.numbers);
+    if (includeLowercase.checked) activeSets.push(charSets.lowercase);
+    if (includeUppercase.checked) activeSets.push(charSets.uppercase);
+    if (includeSymbols.checked && charSets.symbols) activeSets.push(charSets.symbols);
+    if (includeSimpleSymbols.checked && charSets.simpleSymbols) activeSets.push(charSets.simpleSymbols);
+
+    let fullCharset = activeSets.join("");
+    let uniqueChars = new Set(fullCharset.split(""));
+    
+    if (maxUniqueCharsSpan) {
+      maxUniqueCharsSpan.textContent = uniqueChars.size;
+    }
+  }
+
   // --- Visual Feedback for Settings Changes ---
   const allInputs = document.querySelectorAll('.container input, .container select');
   allInputs.forEach(input => {
     input.addEventListener('change', () => {
       generateButton.classList.add('btn-attention');
+      updateMaxUniqueChars();
     });
     input.addEventListener('input', () => {
       generateButton.classList.add('btn-attention');
+      updateMaxUniqueChars();
     });
   });
 
@@ -361,6 +395,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Initial Load
   loadSettings();
+  updateMaxUniqueChars();
   if (autoGenerate.checked) {
     displayPasswords();
   }
