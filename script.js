@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const copyFirstButton = document.getElementById("copyFirst");
   const copyAllButton = document.getElementById("copyAll");
   const passwordsContainer = document.getElementById("passwords-container");
+  let duplicateFallbackTriggered = false;
 
   const defaults = {
     length: 22,
@@ -172,15 +173,16 @@ document.addEventListener("DOMContentLoaded", () => {
     if (includeSimpleSymbols.checked && charSets.simpleSymbols) activeSets.push(charSets.simpleSymbols);
 
     if (activeSets.length === 0 || activeSets.every(set => set === "")) {
-      alert("Please select at least one character type or add more symbols.");
-      return null;
+      return "ERROR_NO_CHARSET";
     }
 
     let fullCharset = activeSets.join("");
 
-    if (noDuplicates.checked && fullCharset.length < length) {
-      alert("Not enough unique characters available for the selected length. Please adjust your settings.");
-      return null;
+    let useNoDuplicates = noDuplicates.checked;
+    if (useNoDuplicates && fullCharset.length < length) {
+      // Graceful fallback: if impossible to have all unique chars, allow duplicates
+      useNoDuplicates = false;
+      duplicateFallbackTriggered = true;
     }
 
     let attempts = 0;
@@ -192,13 +194,13 @@ document.addEventListener("DOMContentLoaded", () => {
       for (let charSet of activeSets) {
         if (charSet.length > 0) {
           let validChars = charSet;
-          if (noDuplicates.checked) {
+          if (useNoDuplicates) {
             validChars = validChars.split('').filter(c => tempCharset.includes(c)).join('');
           }
           if (validChars.length > 0) {
             let char = getRandomChar(validChars);
             passwordArray.push(char);
-            if (noDuplicates.checked) {
+            if (useNoDuplicates) {
               tempCharset = tempCharset.replace(char, "");
             }
           }
@@ -210,7 +212,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (tempCharset.length === 0) break;
         let char = getRandomChar(tempCharset);
         passwordArray.push(char);
-        if (noDuplicates.checked) {
+        if (useNoDuplicates) {
           tempCharset = tempCharset.replace(char, "");
         }
       }
@@ -263,11 +265,16 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- UI Event Handlers ---
   function displayPasswords() {
     passwordsContainer.innerHTML = "";
+    duplicateFallbackTriggered = false;
     const quantity = parseInt(quantitySelect.value);
     let generatedCount = 0;
 
     for (let i = 0; i < quantity; i++) {
       const password = generatePassword();
+      if (password === "ERROR_NO_CHARSET") {
+        if (i === 0) alert("Please select at least one character type or add more symbols.");
+        break; // Stop generating
+      }
       if (password) {
         generatedCount++;
         const div = document.createElement("div");
@@ -307,6 +314,10 @@ document.addEventListener("DOMContentLoaded", () => {
         div.appendChild(copyBtn);
         passwordsContainer.appendChild(div);
       }
+    }
+    const warningEl = document.getElementById("fallback-warning");
+    if (warningEl) {
+      warningEl.style.display = duplicateFallbackTriggered ? "block" : "none";
     }
     if (generatedCount > 0) saveSettings();
   }
