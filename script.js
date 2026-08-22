@@ -330,7 +330,7 @@ document.addEventListener("DOMContentLoaded", () => {
         copyBtn.addEventListener("click", () => {
           navigator.clipboard
             .writeText(password)
-            .then(() => successCopyAlert());
+            .then(() => successCopyAlert("Successfully copied password!"));
         });
 
         div.appendChild(numSpan);
@@ -400,7 +400,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (firstPassword) {
       navigator.clipboard
         .writeText(firstPassword.value)
-        .then(() => successCopyAlert());
+        .then(() => successCopyAlert("Successfully copied first password!"));
     }
   });
 
@@ -424,15 +424,18 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-function successCopyAlert() {
-  var x = document.getElementById("snackbar");
-
-  // Add the "show" class to DIV
-  x.className = "show";
+function successCopyAlert(msg) {
+  const snackbar = document.getElementById("snackbar");
+  if (msg) {
+    snackbar.textContent = msg;
+  } else {
+    snackbar.textContent = "Successfully copied";
+  }
+  snackbar.className = "show";
 
   // After 3 seconds, remove the show class from DIV
   setTimeout(function () {
-    x.className = x.className.replace("show", "");
+    snackbar.className = snackbar.className.replace("show", "");
   }, 3000);
 }
 function successCopyAlertAll() {
