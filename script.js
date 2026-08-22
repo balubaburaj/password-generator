@@ -116,6 +116,18 @@ document.addEventListener("DOMContentLoaded", () => {
     savePreference.checked = settings.savePreference;
   }
 
+  includeSymbols.addEventListener("change", () => {
+    if (includeSymbols.checked) {
+      includeSimpleSymbols.checked = false;
+    }
+  });
+
+  includeSimpleSymbols.addEventListener("change", () => {
+    if (includeSimpleSymbols.checked) {
+      includeSymbols.checked = false;
+    }
+  });
+
   resetButton.addEventListener("click", () => {
     setUIValues(defaults);
     saveSettings();
