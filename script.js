@@ -1,4 +1,27 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // --- Theme Management ---
+  const themeToggle = document.getElementById("themeToggle");
+  
+  function applyTheme(theme) {
+    document.documentElement.setAttribute("data-theme", theme);
+    if (themeToggle) {
+      themeToggle.textContent = theme === "dark" ? "☀️" : "🌙";
+    }
+  }
+
+  // Load saved theme or default to light
+  const savedTheme = localStorage.getItem("passwordGeneratorTheme") || "light";
+  applyTheme(savedTheme);
+
+  if (themeToggle) {
+    themeToggle.addEventListener("click", () => {
+      const currentTheme = document.documentElement.getAttribute("data-theme");
+      const newTheme = currentTheme === "dark" ? "light" : "dark";
+      applyTheme(newTheme);
+      localStorage.setItem("passwordGeneratorTheme", newTheme);
+    });
+  }
+
   // DOM Elements
   const lengthSelect = document.getElementById("length");
   const quantitySelect = document.getElementById("quantity");

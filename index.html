@@ -6,41 +6,79 @@
     <title>Password Generator Plus</title>
     <link rel="icon" href="/favicon.png" type="image/x-icon" />
     <style>
+      :root {
+        --bg-color: #f0f2f5;
+        --container-bg: #ffffff;
+        --text-color: #1c1e21;
+        --label-color: #333;
+        --border-color: #ccc;
+        --input-bg: #ffffff;
+        --button-bg: #1877f2;
+        --button-hover: #166fe5;
+        --reset-bg: #e4e6eb;
+        --reset-text: #4b4f56;
+        --reset-hover: #dcdfe4;
+        --pass-container-bg: #f0f2f5;
+        --pass-container-border: #dddfe2;
+        --pass-number: #606770;
+        --divider: #dddfe2;
+      }
+      
+      [data-theme="dark"] {
+        --bg-color: #18191a;
+        --container-bg: #242526;
+        --text-color: #e4e6eb;
+        --label-color: #b0b3b8;
+        --border-color: #3e4042;
+        --input-bg: #3a3b3c;
+        --button-bg: #2d88ff;
+        --button-hover: #1877f2;
+        --reset-bg: #3a3b3c;
+        --reset-text: #e4e6eb;
+        --reset-hover: #4e4f50;
+        --pass-container-bg: #18191a;
+        --pass-container-border: #3e4042;
+        --pass-number: #b0b3b8;
+        --divider: #3e4042;
+      }
+
       /* --- General Body and Container Styling --- */
       body {
         font-family: Arial, Helvetica, sans-serif;
         font-size: 14px;
         margin: 20px;
-        background-color: #f0f2f5;
+        background-color: var(--bg-color);
+        color: var(--text-color);
         display: flex;
         justify-content: center;
+        transition: background-color 0.3s, color 0.3s;
       }
       .container {
         width: 90%;
         padding: 30px;
-        background-color: #ffffff;
+        background-color: var(--container-bg);
         border-radius: 8px;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s;
       }
       h1 {
         text-align: center;
-        color: #1c1e21;
+        color: var(--text-color);
         margin-bottom: 25px;
       }
 
       /* --- NEW STYLES FOR TWO-COLUMN LAYOUT --- */
       .settings-grid {
         display: flex;
-        flex-wrap: wrap; /* Allows columns to stack on smaller screens */
-        gap: 40px; /* Space between the two columns */
+        flex-wrap: wrap; 
+        gap: 40px; 
       }
       .column {
-        flex: 1; /* Each column will grow to take available space */
-        min-width: 300px; /* Prevents columns from getting too narrow */
+        flex: 1; 
+        min-width: 300px; 
       }
-      /* --- END OF NEW STYLES --- */
 
-      /* --- Form Group and Element Styling using Flexbox for alignment --- */
+      /* --- Form Group and Element Styling --- */
       .form-group {
         display: flex;
         align-items: center;
@@ -48,17 +86,20 @@
       }
       .form-group label,
       .form-group .label-text {
-        color: #333;
+        color: var(--label-color);
         padding-right: 15px;
       }
       .form-group input[type="checkbox"] {
         margin-right: 10px;
       }
       .form-group input[type="text"],
+      .form-group input[type="number"],
       .form-group select {
         padding: 5px;
         border-radius: 4px;
-        border: 1px solid #ccc;
+        border: 1px solid var(--border-color);
+        background-color: var(--input-bg);
+        color: var(--text-color);
       }
       #symbols {
         width: auto;
@@ -73,7 +114,7 @@
       button {
         padding: 10px 20px;
         border: none;
-        background-color: #1877f2;
+        background-color: var(--button-bg);
         color: white;
         border-radius: 6px;
         cursor: pointer;
@@ -82,22 +123,22 @@
         transition: background-color 0.2s;
       }
       button:hover {
-        background-color: #166fe5;
+        background-color: var(--button-hover);
       }
       #reset {
-        background-color: #e4e6eb;
-        color: #4b4f56;
+        background-color: var(--reset-bg);
+        color: var(--reset-text);
       }
       #reset:hover {
-        background-color: #dcdfe4;
+        background-color: var(--reset-hover);
       }
 
       /* --- Password Display Area --- */
       #passwords-container {
         margin-top: 10px;
-        border: 1px solid #dddfe2;
+        border: 1px solid var(--pass-container-border);
         padding: 15px;
-        background-color: #f0f2f5;
+        background-color: var(--pass-container-bg);
         border-radius: 6px;
         min-height: 150px;
       }
@@ -109,28 +150,26 @@
       }
       .password-number {
         flex: 0 0 30px;
-        color: #606770;
+        color: var(--pass-number);
         font-size: 1.2em;
         text-align: right;
         user-select: none;
-        -webkit-user-select: none;
-        -moz-user-select: none;
       }
       .password-text {
         font-family: "Courier New", Courier, monospace;
         font-size: 1.5em;
         padding: 8px 10px;
-        border: 1px solid #ccc;
+        border: 1px solid var(--border-color);
         border-radius: 6px;
-        background-color: #fff;
-        color: #1c1e21;
+        background-color: var(--input-bg);
+        color: var(--text-color);
         outline: none;
         transition: border-color 0.2s, box-shadow 0.2s;
         cursor: text;
         max-width: calc(100% - 120px);
       }
       .password-text:focus {
-        border-color: #1877f2;
+        border-color: var(--button-bg);
         box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
       }
       .copy-btn {
@@ -152,6 +191,7 @@
       .btn-attention:hover {
         background-color: #218838 !important;
       }
+      
       /* toast */
       #snackbar, #snackbar-all {
         visibility: hidden;
@@ -167,34 +207,117 @@
         left: 50%;
         bottom: 30px;
       }
-
       #snackbar.show, #snackbar-all.show {
         visibility: visible;
-        -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
         animation: fadein 0.5s, fadeout 0.5s 2.5s;
-      }
-
-      @-webkit-keyframes fadein {
-        from { bottom: 0; opacity: 0; }
-        to { bottom: 30px; opacity: 1; }
       }
       @keyframes fadein {
         from { bottom: 0; opacity: 0; }
         to { bottom: 30px; opacity: 1; }
       }
-      @-webkit-keyframes fadeout {
-        from { bottom: 30px; opacity: 1; }
-        to { bottom: 0; opacity: 0; }
-      }
       @keyframes fadeout {
         from { bottom: 30px; opacity: 1; }
         to { bottom: 0; opacity: 0; }
+      }
+
+      /* --- Mobile Responsive Styles --- */
+      @media (max-width: 768px) {
+        body {
+          margin: 0;
+          padding: 15px 10px;
+          background-color: var(--container-bg);
+        }
+        .container {
+          width: 100%;
+          padding: 20px 15px;
+          box-sizing: border-box;
+          box-shadow: none;
+        }
+        .settings-grid {
+          gap: 10px;
+        }
+        .form-group {
+          flex-wrap: wrap;
+          align-items: flex-start;
+          margin-bottom: 15px;
+        }
+        .form-group input[type="checkbox"] {
+          margin-top: 4px;
+          flex-shrink: 0;
+        }
+        .form-group label {
+          flex: 1 1 0;
+          min-width: 0;
+          line-height: 1.5;
+        }
+        #symbols, #simpleSymbols {
+          flex: 1 1 100%;
+          margin-top: 10px;
+          margin-left: 25px;
+          box-sizing: border-box;
+        }
+        label[for="quantity"] {
+          flex: 0 0 auto !important;
+        }
+        #quantity {
+          flex: 1 1 auto;
+        }
+        #reset {
+          flex: 1 1 100%;
+          margin-top: 15px;
+          padding: 12px;
+        }
+        .button-group {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+        .button-group button {
+          width: 100%;
+          margin: 0;
+          padding: 14px;
+          font-size: 1.1em;
+        }
+        #passwords-container {
+          padding: 10px;
+          background-color: transparent;
+          border: none;
+        }
+        .password-item {
+          flex-wrap: nowrap;
+          padding: 12px 0;
+          border-bottom: 1px solid var(--divider);
+          align-items: center;
+        }
+        .password-item:last-child {
+          border-bottom: none;
+        }
+        .password-number {
+          flex: 0 0 25px;
+          font-size: 1.1em;
+          text-align: left;
+        }
+        .password-text {
+          font-size: 1.1em;
+          padding: 10px;
+          max-width: calc(100% - 90px);
+          width: auto !important;
+        }
+        .copy-btn {
+          margin-left: auto;
+          margin-top: 0;
+          padding: 10px 14px;
+          width: auto;
+        }
       }
     </style>
   </head>
   <body>
     <div class="container">
-      <h1>Password Generator Plus</h1>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+        <h1 style="margin-bottom: 0;">Password Generator Plus</h1>
+        <button id="themeToggle" style="background: none; border: none; font-size: 1.5em; cursor: pointer; padding: 0; color: var(--text-color); margin: 0; transition: transform 0.2s;" title="Toggle Dark/Light Mode">🌙</button>
+      </div>
 
       <div class="settings-grid">
         <div class="column">
@@ -266,7 +389,7 @@
           </div>
         </div>
       </div>
-      <hr style="border: none; border-top: 1px solid #dddfe2; margin: 20px 0" />
+      <hr style="border: none; border-top: 1px solid var(--divider); margin: 20px 0" />
 
       <div class="form-group">
         <label for="quantity" class="label-text">Quantity:</label>
